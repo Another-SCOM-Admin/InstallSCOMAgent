@@ -387,6 +387,7 @@ logit "Install 2019 selected, installing 2019 agent"
         {
             logit "Found 2016 agent, upgrading"
             Upgrade2016Agent
+            Install2019UR
         }
         else
         {
@@ -412,7 +413,7 @@ logit "Install 2016 selected, installing 2016 agent"
         {
             logit "Found 2012 agent, upgrading"
             Upgrade2012Agent
-            Install2016UR7
+            Install2016UR
         }
         elseif ($ver -eq "2019")
         {
