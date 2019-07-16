@@ -3,10 +3,8 @@ SCOM Agent Install PowerShell Script
 
 View this readme in RAW so the folder structure makes sense.
 
-Usage:
-InstallSCOMAgent -uninstall
-InstallSCOMAgent -install2016
-InstallSCOMAgent -install2019
+Run script with 1 of 3 parameters:
+InstallSCOMAgent -uninstall, -install2016, -install2019
 
 This script will also upgrade any 2012 or 2016 agent to the next version.  It will not downgrade clients.
 
