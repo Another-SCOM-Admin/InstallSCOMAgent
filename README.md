@@ -15,12 +15,11 @@ You can also copy an MSP (update rollup) for the agent into the folder and the s
 2019 files should go in the same folder as the script, as well as the MSP for 2019 agent if available.
 
 So your folder structure should look similar to this:
-
-│   InstallSCOMAgent.ps1
-│   MOMAgent.msi
-├───2012Agent
-│       MOMAgent.msi
-└───2016Agent
+InstallSCOMAgent.ps1
+MOMAgent.msi
+<2012Agent>
+        MOMAgent.msi
+<2016Agent>
         KB4492182-AMD64-Agent.msp
         MOMAgent.msi
 
