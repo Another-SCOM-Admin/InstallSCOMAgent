@@ -13,6 +13,7 @@ Inside those subfolders copy the MOMAgent.msi for the respective agent version.
 You can also copy an MSP (update rollup) for the agent into the folder and the script will install that automatically.
 
 2019 files should go in the same folder as the script, as well as the MSP for 2019 agent if available.
+You must have the momagent.msi in the correct folder to uninstall an agent.
 
 So your folder structure should look similar to this:
 
