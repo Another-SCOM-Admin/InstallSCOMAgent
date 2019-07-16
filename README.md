@@ -6,6 +6,8 @@ View this readme in RAW so the folder structure makes sense.
 Run script with 1 of 3 parameters:
 InstallSCOMAgent -uninstall, -install2016, -install2019
 
+!!!- You will need to open the script and update the $MYMG and $MYMS variables with your own Management Group and Management Server.
+
 This script will also upgrade any 2012 or 2016 agent to the next version.  It will not downgrade clients.
 
 Copy the script to a folder along with the MOMAgent.msi for 2019.  Inside that folder create two folders named "2012Agent" and "2016Agent".
