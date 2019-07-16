@@ -10,7 +10,7 @@ InstallSCOMAgent -install2019
 
 This script will also upgrade any 2012 or 2016 agent to the next version.  It will not downgrade clients.
 
-Copy the script to a folder along with the MOMAgent.msi for 2019.  Inside that folder create two folders named "2012Agent" and "2016Agent" 
+Copy the script to a folder along with the MOMAgent.msi for 2019.  Inside that folder create two folders named "2012Agent" and "2016Agent".
 Inside those subfolders copy the MOMAgent.msi for the respective agent version.
 You can also copy an MSP (update rollup) for the agent into the folder and the script will install that automatically.
 
@@ -18,6 +18,7 @@ You can also copy an MSP (update rollup) for the agent into the folder and the s
 
 So your folder structure should look similar to this:
 
+<Root folder>
 InstallSCOMAgent.ps1
 MOMAgent.msi
 <2012Agent>
