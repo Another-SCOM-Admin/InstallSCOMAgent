@@ -1,6 +1,8 @@
 # InstallSCOMAgent
 SCOM Agent Install PowerShell Script
 
+View this readme in RAW so the folder structure makes sense.
+
 Usage:
 InstallSCOMAgent -uninstall
 InstallSCOMAgent -install2016
