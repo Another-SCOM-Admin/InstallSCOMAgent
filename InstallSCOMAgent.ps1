@@ -1,15 +1,13 @@
-Param (
-[Switch]$uninstall,
-[Switch]$install2016,
-[Switch]$install2019
-)
+[CmdletBinding(DefaultParameterSetName="Install SCOM 2019 Agent")]
+Param(
+    [Parameter(ParameterSetName="Uninstall SCOM Agent")][Switch]$uninstall,
+    [Parameter(ParameterSetName="Install SCOM 2016 Agent")][Switch]$install2016,
+    [Parameter(ParameterSetName="Install SCOM 2019 Agent")][Switch]$install2019,
+    [string]$MYMG = "OMMG",
+    [string]$MYMS = $Env:ComputerName
+) 
 
 $scriptpath = split-path -parent $MyInvocation.MyCommand.Definition
-
-####Custom names####
-$MYMG="OM19MG"
-$MYMS="OM19MS01"
-####################
 
 ####setup logging####
 function timing{
