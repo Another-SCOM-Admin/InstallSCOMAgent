@@ -31,15 +31,13 @@ Param
     [Parameter(Mandatory=$true)]
     [string]$logit
 )
-"$logit $(timing)“ | out-file $env:windir\temp\InstallSCOMAgent.log -append
+"$logit $(timing)" | out-file $env:windir\temp\InstallSCOMAgent.log -append
 }
 #####################
-
 function FindAgent
 {
     [bool](Get-Service | where name -eq "HealthService")
 }
-
 function CheckPreReqs
 {
     if (test-path 'HKLM\SOFTWARE\Microsoft\Microsoft Operations Manager\3.0\Setup\ServerVersion')
@@ -50,7 +48,7 @@ function CheckPreReqs
     }
     else
     {
-        write-host "No OM Server component found, continuing...“
+        write-host "No OM Server component found, continuing..."
     }
     if (test-path 'HKLM\SOFTWARE\Microsoft\Microsoft Operations Manager\3.6\Setup\UIVersion')
     {
@@ -117,14 +115,14 @@ function UninstallAgent
     $agentversion=GetAgentVersion
     if ($agentversion -eq "2012")
     {
-        write-host “version match for 2012, uninstalling agent..."
+        write-host "version match for 2012, uninstalling agent..."
         $p1='/qb'
         $p2='/l*'
-        $args=“/x $scriptpath\2012agent\momagent.msi $p1 $p2 $env:windir\temp\ScomAgentUninstall.log"
+        $args="/x $scriptpath\2012agent\momagent.msi $p1 $p2 $env:windir\temp\ScomAgentUninstall.log"
         $result=(start-process msiexec.exe -ArgumentList $args -wait -Passthru).ExitCode
         if ($result -eq 0)
         {
-            write-host “Uninstall completed" -ForegroundColor Green
+            write-host "Uninstall completed" -ForegroundColor Green
             logit "2012 agent uninstall completed"
         }
         else
@@ -137,7 +135,7 @@ function UninstallAgent
     elseif ($agentversion -eq "2019")
     {
         write-host "version match for 2019, uninstalling agent..."
-        $p1=‘/qb'
+        $p1='/qb'
         $p2='/l*'
         $args="/x $scriptpath\momagent.msi $p1 $p2 $env:windir\temp\ScomAgentUninstall.log"
         $result=(start-process msiexec.exe -ArgumentList $args -Wait -Passthru).ExitCode
@@ -157,7 +155,7 @@ function UninstallAgent
     {
         write-host "version match for 2016, uninstalling agent..."
         logit "version match for 2016, uninstalling agent..."
-        $p1=‘/qb'
+        $p1='/qb'
         $p2='/l*'
         $args="/x $scriptpath\2016agent\momagent.msi $p1 $p2 $env:windir\temp\ScomAgentUninstall.log"
         $result=(start-process msiexec.exe -ArgumentList $args -Wait -Passthru).ExitCode
@@ -180,7 +178,6 @@ function UninstallAgent
         exit 404
     }
 }
-
 function Install2012Agent
 {
     $p1='/qn'
@@ -199,85 +196,80 @@ function Install2012Agent
         exit 992012
     }
 }
-
 function Install2019Agent
 {
     $p1='/qn'
     $p2='/l*'
-    $args="/i $scriptpath\momagent.msi $p1 $p2 $env:windir\temp\Scom2019AgentInstall.log USE_SETTINGS_FROM_AD=0 NOAPM=1 MANAGEMENT_GROUP=$MYMG MANAGEMENT_SERVER_DNS=$MYMS USE_MANUALLY_SPECIFIED_SETTINGS=1 AcceptEndUserLicenseAgreement=1“
+    $args="/i $scriptpath\momagent.msi $p1 $p2 $env:windir\temp\Scom2019AgentInstall.log USE_SETTINGS_FROM_AD=0 NOAPM=1 MANAGEMENT_GROUP=$MYMG MANAGEMENT_SERVER_DNS=$MYMS USE_MANUALLY_SPECIFIED_SETTINGS=1 AcceptEndUserLicenseAgreement=1"
     $result=(start-process -FilePath msiexec.exe -ArgumentList $args -Wait -Passthru).ExitCode
     if ($result -eq 0)
     {
-        write-host “2019 Install succeeded, need to install UR if one exists” -ForegroundColor Green
+        write-host "2019 Install succeeded, need to install UR if one exists" -ForegroundColor Green
         logit "2019 Install succeeded, need to install UR if one exists"
         Install2019UR
     }
     else
     {
-        write-host “2019 Install failed, quitting"
+        write-host "2019 Install failed, quitting"
         logit "2019 Install failed, quitting"
         exit 992019
     }
 }
-
 function Install2016Agent
 {
     $p1='/qn'
     $p2='/l*'
-    $args="/i $scriptpath\2016agent\momagent.msi $p1 $p2 $env:windir\temp\Scom2016AgentInstall.log USE_SETTINGS_FROM_AD=0 NOAPM=1 MANAGEMENT_GROUP=$MYMG MANAGEMENT_SERVER_DNS=$MYMS USE_MANUALLY_SPECIFIED_SETTINGS=1 AcceptEndUserLicenseAgreement=1“
+    $args="/i $scriptpath\2016agent\momagent.msi $p1 $p2 $env:windir\temp\Scom2016AgentInstall.log USE_SETTINGS_FROM_AD=0 NOAPM=1 MANAGEMENT_GROUP=$MYMG MANAGEMENT_SERVER_DNS=$MYMS USE_MANUALLY_SPECIFIED_SETTINGS=1 AcceptEndUserLicenseAgreement=1"
     $result=(start-process -FilePath msiexec.exe -ArgumentList $args -Wait -Passthru).ExitCode
     if ($result -eq 0)
     {
-        write-host “2016 Install succeeded, need to install UR if one exists” -ForegroundColor Green
-        logit “2016 Install succeeded, need to install UR if one exists”
+        write-host "2016 Install succeeded, need to install UR if one exists" -ForegroundColor Green
+        logit "2016 Install succeeded, need to install UR if one exists"
         Install2016UR
     }
     else
     {
-        write-host “2016 Install failed, quitting"
+        write-host "2016 Install failed, quitting"
         logit "2016 Install failed, quitting"
         exit 992016
     }
 }
-
 function Upgrade2016Agent
 {
     $p1='/qn'
     $p2='/l*'
-    $args="/i $scriptpath\momagent.msi $p1 $p2 $env:windir\temp\Scom2016AgentUpgrade.log AcceptEndUserLicenseAgreement=1“
+    $args="/i $scriptpath\momagent.msi $p1 $p2 $env:windir\temp\Scom2016AgentUpgrade.log AcceptEndUserLicenseAgreement=1"
     $result=(start-process -FilePath msiexec.exe -ArgumentList $args -Wait -Passthru).ExitCode
     if ($result -eq 0)
     {
-        write-host “Upgrade to 2019 succeeded” -ForegroundColor Green
+        write-host "Upgrade to 2019 succeeded" -ForegroundColor Green
         logit "Upgrade to 2019 succeeded"
     }
     else
     {
-        write-host “Upgrade to 2019 failed, quitting"
+        write-host "Upgrade to 2019 failed, quitting"
         logit "Upgrade to 2019 failed, quitting"
         exit 9920192
     }
 }
-
 function Upgrade2012Agent
 {
     $p1='/qn'
     $p2='/l*'
-    $args="/i $scriptpath\2016agent\momagent.msi $p1 $p2 $env:windir\temp\Scom2012AgentUpgrade.log AcceptEndUserLicenseAgreement=1“
+    $args="/i $scriptpath\2016agent\momagent.msi $p1 $p2 $env:windir\temp\Scom2012AgentUpgrade.log AcceptEndUserLicenseAgreement=1"
     $result=(start-process -FilePath msiexec.exe -ArgumentList $args -Wait -Passthru).ExitCode
     if ($result -eq 0)
     {
-        write-host “Upgrade to 2016 succeeded” -ForegroundColor Green
+        write-host "Upgrade to 2016 succeeded" -ForegroundColor Green
         logit "Upgrade to 2016 succeeded"
     }
     else
     {
-        write-host “Upgrade to 2016 failed, quitting"
+        write-host "Upgrade to 2016 failed, quitting"
         logit "Upgrade to 2016 failed, quitting"
         exit 9920162
     }
 }
-
 function Install2016UR
 {
     logit "Checking for UR"
@@ -297,16 +289,16 @@ function Install2016UR
     {
         $p1='/qn'
         $p2='/l*'
-        $args="/p $scriptpath\2016agent\$MSP $p1 $p2 $env:windir\temp\$MSP.log“
+        $args="/p $scriptpath\2016agent\$MSP $p1 $p2 $env:windir\temp\$MSP.log"
         $result=(start-process -FilePath msiexec.exe -ArgumentList $args -Wait -Passthru).ExitCode
         if ($result -eq 0)
         {
-            write-host “$MSP succeeded” -ForegroundColor Green
+            write-host "$MSP succeeded" -ForegroundColor Green
             logit "$MSP succeeded"
         }
         else
         {
-            write-host “$MSP failed, quitting"
+            write-host "$MSP failed, quitting"
             logit "$MSP failed, quitting"
             exit 9920163
         }
@@ -317,7 +309,6 @@ function Install2016UR
         logit "No MSPs found, not installing any UR"
     }
 }
-
 function Install2019UR
 {
     logit "Checking for UR"
@@ -337,16 +328,16 @@ function Install2019UR
     {
         $p1='/qn'
         $p2='/l*'
-        $args="/p $scriptpath\$MSP $p1 $p2 $env:windir\temp\$MSP.log“
+        $args="/p $scriptpath\$MSP $p1 $p2 $env:windir\temp\$MSP.log"
         $result=(start-process -FilePath msiexec.exe -ArgumentList $args -Wait -Passthru).ExitCode
         if ($result -eq 0)
         {
-            write-host “$MSP succeeded” -ForegroundColor Green
+            write-host "$MSP succeeded" -ForegroundColor Green
             logit "$MSP succeeded"
         }
         else
         {
-            write-host “$MSP failed, quitting"
+            write-host "$MSP failed, quitting"
             logit "$MSP failed, quitting"
             exit 9920193
         }
@@ -357,15 +348,11 @@ function Install2019UR
         logit "No MSPs found, not installing any UR"
     }
 }
-
-
 ##### MAIN SCRIPT ######
-
 logit "Starting InstallSCOMAgent script"
 logit "Checking prereqs"
 CheckPreReqs
 logit "Prereqs passed, continuing"
-
 if ($install2019 -eq $true)
 {
 write-host "Install 2019 selected, installing 2019 agent"
