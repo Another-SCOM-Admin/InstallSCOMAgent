@@ -50,7 +50,7 @@ function CheckPreReqs
     {
         write-host "No OM Server component found, continuing..."
     }
-    if (test-path 'HKLM\SOFTWARE\Microsoft\Microsoft Operations Manager\3.6\Setup\UIVersion')
+    if (test-path 'HKLM\SOFTWARE\Microsoft\Microsoft Operations Manager\3.0\Setup\UIVersion')
     {
         write-host "Found OM console, quitting"
         logit "Found OM console, quitting"
