@@ -1,15 +1,43 @@
+<#
+ 	.SYNOPSIS
+        This script can uninstall, install SCOM Agent 2016, 2019, upgrade SCOM 2012 to 2016, and upgrade SCOM 2016 to 2019.
+		
+    .DESCRIPTION
+        This script can install SCOM Agent 2016, 2019, upgrade SCOM 2012 to 2016, and upgrade SCOM 2016 to 2019.  You can hardcode the MYMG and MYMS in the script code below, or you can use the
+        switches -MYMG and -MYMS to specify them in the command line.
+		
+	.PARAMETER  <uninstall>
+		Uninstalls the SCOM Agent, requires the momagent.msi be present and specific to the version being uninstalled in the proper subfolder.
+		
+	.PARAMETER	<install2016>
+		Installs SCOM Agent 2016, uprades 2012 if it is present.  Installs any UR that is copied into its 2016 folder.
+		
+	.PARAMETER  <install2019>
+        Installs SCOM Agent 2019, uprades 2016 if it is present.  Installs any UR that is copied into its 2019 folder.
+        
+    .SWITCH <MYMS>
+        This switch specifies the Management Server FQDN the Agent will report to.
+
+    .SWITCH <MYMG>
+        This switch specifies the Management Group the Agent will report to.
+        
+    .EXAMPLE
+        C:\PS> .\Install-SCOMAgent -install2016 -MYMG SCOM-MG-NAME -MYMS MANAGEMENTSERVERNAME.DOMAIN.COM
+    
+#>
+
 [CmdletBinding(DefaultParameterSetName="Install SCOM 2019 Agent")]
 Param(
     [Parameter(ParameterSetName="Uninstall SCOM Agent")][Switch]$uninstall,
     [Parameter(ParameterSetName="Install SCOM 2016 Agent")][Switch]$install2016,
     [Parameter(ParameterSetName="Install SCOM 2019 Agent")][Switch]$install2019,
-    [string]$MYMG = "OMMG",
-    [string]$MYMS = $Env:ComputerName
+    [string]$MYMG = "",
+    [string]$MYMS = ""
 ) 
 
 $scriptpath = split-path -parent $MyInvocation.MyCommand.Definition
 
-####setup logging####
+######SETUP LOGGING######
 function timing{
 $a=(get-date).month
 $b=(get-date).day
@@ -18,13 +46,11 @@ $d=(get-date).hour
 $e=(get-date).minute
 $f=(get-date).second
 "$a-$b-$c ${d}:${e}:${f}"}
-
-if(gi $env:windir\temp\InstallSCOMAgent.log -ErrorAction SilentlyContinue)
+if(Get-Item $env:windir\temp\InstallSCOMAgent.log -ErrorAction SilentlyContinue)
 {write-host "log exists, continuing..."}
 else
 {write-host "log does not exist, creating..."
 new-item $env:windir\temp\InstallSCOMAgent.log -type file |Out-Null}
-
 Function logit{
 Param
 (
@@ -33,10 +59,11 @@ Param
 )
 "$logit $(timing)" | out-file $env:windir\temp\InstallSCOMAgent.log -append
 }
-#####################
+#########################
+
 function FindAgent
 {
-    [bool](Get-Service | where name -eq "HealthService")
+    [bool](Get-Service | Where-Object name -eq "HealthService")
 }
 function CheckPreReqs
 {
@@ -178,6 +205,7 @@ function UninstallAgent
         exit 404
     }
 }
+
 function Install2012Agent
 {
     $p1='/qn'
@@ -196,6 +224,7 @@ function Install2012Agent
         exit 992012
     }
 }
+
 function Install2019Agent
 {
     $p1='/qn'
@@ -215,6 +244,7 @@ function Install2019Agent
         exit 992019
     }
 }
+
 function Install2016Agent
 {
     $p1='/qn'
@@ -234,6 +264,7 @@ function Install2016Agent
         exit 992016
     }
 }
+
 function Upgrade2016Agent
 {
     $p1='/qn'
@@ -252,6 +283,7 @@ function Upgrade2016Agent
         exit 9920192
     }
 }
+
 function Upgrade2012Agent
 {
     $p1='/qn'
@@ -270,10 +302,11 @@ function Upgrade2012Agent
         exit 9920162
     }
 }
+
 function Install2016UR
 {
     logit "Checking for UR"
-    foreach ($_ in gci $scriptpath\2016agent)
+    foreach ($_ in Get-ChildItem $scriptpath\2016agent)
     {
         if ($_ -like "*.msp")
         {
@@ -309,10 +342,11 @@ function Install2016UR
         logit "No MSPs found, not installing any UR"
     }
 }
+
 function Install2019UR
 {
     logit "Checking for UR"
-    foreach ($_ in gci $scriptpath)
+    foreach ($_ in Get-ChildItem $scriptpath)
     {
         if ($_ -like "*.msp")
         {
@@ -348,6 +382,7 @@ function Install2019UR
         logit "No MSPs found, not installing any UR"
     }
 }
+
 ##### MAIN SCRIPT ######
 logit "Starting InstallSCOMAgent script"
 logit "Checking prereqs"
